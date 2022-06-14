@@ -1,35 +1,24 @@
 import moment from "moment";
 import "./App.css";
 import { useState, useEffect } from "react";
+import { useQuery, gql } from "@apollo/client";
 
-const data = {
-  Buildings: [
-    {
-      name: "Building 8",
-      meetingRooms: [
-        {
-          name: "Punjab",
-          meetings: [
-            {
-              title: "Booked for Interview",
-              date: "16/06/2022",
-              startTime: "00:00",
-              endTime: "02:00",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "Building 4",
-      meetingRooms: [],
-    },
-    {
-      name: "Building 6",
-      meetingRooms: [],
-    },
-  ],
-};
+const FETCH_ALL_BUILDINGS = gql`
+  query FetchAllBuildings {
+    Buildings {
+      name
+      meetingRooms {
+        name
+        meetings {
+          title
+          date
+          startTime
+          endTime
+        }
+      }
+    }
+  }
+`;
 
 function getTotatMeeting(data) {
   let totalBuildings = data.Buildings.length;
@@ -120,6 +109,8 @@ function getRoomAndMeetingDetails(data) {
 }
 
 function App() {
+  const { loading, error, data } = useQuery(FETCH_ALL_BUILDINGS);
+
   const [totalBuildings, setTotalBuildings] = useState(0);
   const [totalRooms, setTotalRooms] = useState(0);
   const [freeRoomsNow, setFreeRoomsNow] = useState(0);
@@ -127,6 +118,7 @@ function App() {
   const [onGoingMeetingsNow, setOnGoingMeetingsNow] = useState(0);
 
   useEffect(() => {
+    if (!data) return;
     setTotalBuildings(getTotatMeeting(data));
     setTotalRooms(getTotalRooms(data));
     const {
@@ -138,6 +130,9 @@ function App() {
     setTotalMeetingsToday(totalNoMeetingGoingOnToday);
     setOnGoingMeetingsNow(totalMeetingGoingOnNow);
   }, [data]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error {`${error}`}</p>;
 
   return (
     <>
