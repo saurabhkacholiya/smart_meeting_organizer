@@ -2,6 +2,7 @@ import moment from "moment";
 import "./App.css";
 import { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 const FETCH_ALL_BUILDINGS = gql`
   query FetchAllBuildings {
@@ -64,9 +65,9 @@ function getRoomAndMeetingDetails(data) {
   let totalNoMeetingGoingOnToday = 0;
   let totalMeetingGoingOnNow = 0;
 
-  data.Buildings.forEach((building) => {
-    building.meetingRooms.forEach((room) => {
-      room.meetings.forEach((meeting) => {
+  data?.Buildings?.forEach((building) => {
+    building?.meetingRooms?.forEach((room) => {
+      room?.meetings?.forEach((meeting) => {
         const currentDateObj = moment();
         const meetingDate = moment(meeting.date, "DD/MM/YYYY").format(
           "DD/MM/YYYY"
@@ -109,6 +110,7 @@ function getRoomAndMeetingDetails(data) {
 }
 
 function App() {
+  const navigate = useNavigate();
   const { loading, error, data } = useQuery(FETCH_ALL_BUILDINGS);
 
   const [totalBuildings, setTotalBuildings] = useState(0);
@@ -134,6 +136,10 @@ function App() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error {`${error}`}</p>;
 
+  function handleNavigation() {
+    navigate("/add_meeting");
+  }
+
   return (
     <>
       <div>{`Total buildings ${totalBuildings}`} </div>
@@ -147,7 +153,9 @@ function App() {
         <div>{`Total ${totalMeetingsToday}`}</div>
         <div>{`Total ${onGoingMeetingsNow} Going On`}</div>
       </div>
-      <button className="button">Add meeting</button>
+      <button className="button" onClick={handleNavigation}>
+        Add meeting
+      </button>
     </>
   );
 }
