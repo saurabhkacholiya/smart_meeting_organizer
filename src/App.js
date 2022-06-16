@@ -132,22 +132,22 @@ function App() {
   }
 
   return (
-    <>
-      <div>{`Total buildings ${totalBuildings}`} </div>
-      <div>
-        <div>Rooms</div>
-        <div>{`Total Rooms ${totalRooms}`}</div>
-        <div>{`Free now ${totalFreeRoomsNow}`}</div>
+    <div className="main">
+      <div className="card_item">{`Total buildings ${totalBuildings}`} </div>
+      <div className="card_item col">
+        <div className="m-10">Rooms</div>
+        <div className="m-10">{`Total Rooms ${totalRooms}`}</div>
+        <div className="m-10">{`Free now ${totalFreeRoomsNow}`}</div>
       </div>
-      <div>
-        <div>Meetings</div>
-        <div>{`Total ${totalNoMeetingGoingOnToday}`}</div>
-        <div>{`Total ${totalMeetingGoingOnNow} Going On`}</div>
+      <div className="card_item col">
+        <div className="m-10">Meetings</div>
+        <div className="m-10">{`Total ${totalNoMeetingGoingOnToday}`}</div>
+        <div className="m-10">{`Total ${totalMeetingGoingOnNow} Going On`}</div>
       </div>
       <button className="button" onClick={handleNavigation}>
         Add meeting
       </button>
-    </>
+    </div>
   );
 }
 

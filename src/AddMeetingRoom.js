@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./App.css";
 
 function Dropdown({ title, list, value, onChange }) {
   return (
     <>
-      <label>
+      <label className="col m-10">
         {title}
-        <select value={value} onChange={onChange}>
+        <select className="input_type m-10" value={value} onChange={onChange}>
           {list.map((item, idx) => {
             return (
               <option key={`${item.id}_${idx}`} value={item.id}>
@@ -79,37 +80,51 @@ function AddMeetingRoom() {
   }
 
   return (
-    <div>
-      <div>Add Meeting</div>
-
-      <div>
-        <div>title</div>
-        <div>
+    <div className="main">
+      <div className="card_item">
+        <div className="m-10">Title</div>
+        <div className="m-10">
           <input
             placeholder="Please select meeting title"
             type="text"
             value={title}
             onChange={handleTitle}
+            className="input_type"
           />
         </div>
       </div>
 
-      <div>
-        <div>date</div>
-        <input type={"date"} onChange={handleDateChange} value={date} />
+      <div className="card_item">
+        <div className="m-10">Date</div>
+        <input
+          className="input_type"
+          type={"date"}
+          onChange={handleDateChange}
+          value={date}
+        />
       </div>
 
-      <div>
-        <div>Start Time</div>
-        <input type={"time"} onChange={handleStartTime} value={startTime} />
+      <div className="card_item">
+        <div className="m-10">Start Time</div>
+        <input
+          className="input_type"
+          type={"time"}
+          onChange={handleStartTime}
+          value={startTime}
+        />
       </div>
 
-      <div>
+      <div className="card_item">
         <div>End Time</div>
-        <input type={"time"} onChange={handleEndTime} value={endTime} />
+        <input
+          className="input_type"
+          type={"time"}
+          onChange={handleEndTime}
+          value={endTime}
+        />
       </div>
 
-      <div>
+      <div className="card_item">
         <Dropdown
           value={selectedBuilding}
           onChange={handleSelectBuilding}
@@ -117,7 +132,9 @@ function AddMeetingRoom() {
           title="SelectBuilding"
         />
       </div>
-      <button onClick={handleNavigate}>Next</button>
+      <button className="button" onClick={handleNavigate}>
+        Next
+      </button>
     </div>
   );
 }

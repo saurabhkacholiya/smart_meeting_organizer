@@ -1,5 +1,7 @@
 .button {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-self: center;
   padding: 15px 25px;
   font-size: 24px;
   cursor: pointer;
@@ -11,6 +13,7 @@
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
+  width: 250px;
 }
 
 .button:hover {
@@ -21,4 +24,44 @@
   background-color: #3e8e41;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
+}
+
+.card_item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  background: white;
+  width: 280px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgb(0 0 0 / 25%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  animation-name: flamelab-convo-widget_msg-appear;
+  animation-duration: 2s;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 23px;
+  margin: 20px;
+}
+
+.col {
+  flex-direction: column;
+}
+
+.m-10 {
+  margin: 10px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 20px;
+}
+
+.input_type {
+  padding: 10px;
+  border-radius: 10px;
+  width: 200px;
 }
