@@ -1,6 +1,6 @@
 import moment from "moment";
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
@@ -23,28 +23,15 @@ const FETCH_ALL_BUILDINGS = gql`
   }
 `;
 
-function getTotatMeeting(data) {
-  let totalBuildings = data.Buildings.length;
-  return totalBuildings;
-}
-
-function getTotalRooms(data) {
-  let totalRoom = 0;
-  data.Buildings.forEach((building) => {
-    totalRoom += building.meetingRooms.length;
-  });
-  return totalRoom;
-}
-
-function getRoomStatusIsFreeForCurrentTime(
-  currentDateObj,
-  meetingDate,
-  startTime,
-  endTime
-) {
-  if (currentDateObj.format("DD/MM/YYYY") !== meetingDate) return true;
-  return !currentDateObj.isBetween(startTime, endTime);
-}
+// function getRoomStatusIsFreeForCurrentTime(
+//   currentDateObj,
+//   meetingDate,
+//   startTime,
+//   endTime
+// ) {
+//   if (currentDateObj.format("DD/MM/YYYY") !== meetingDate) return true;
+//   return !currentDateObj.isBetween(startTime, endTime);
+// }
 
 function getIsMeetingGoingOnTodayStatus(currentDateObj, meetingDate) {
   return currentDateObj.format("DD/MM/YYYY") === meetingDate;
@@ -63,12 +50,16 @@ function getIsMeetingGoingOnNowStatus(
 }
 
 function getRoomAndMeetingDetails(data) {
-  let totalFreeRoomNow = 0;
+  let totalFreeRoomsNow = 0;
   let totalNoMeetingGoingOnToday = 0;
   let totalMeetingGoingOnNow = 0;
+  let totalRooms = 0;
+  let totalBuildings = data?.Buildings.length;
 
   data?.Buildings?.forEach((building) => {
+    totalRooms += building.meetingRooms.length;
     building?.meetingRooms?.forEach((room) => {
+      let isCurrentRoomFree = true;
       room?.meetings?.forEach((meeting) => {
         const currentDateObj = moment();
         const meetingDate = moment(meeting.date, "DD/MM/YYYY").format(
@@ -90,49 +81,36 @@ function getRoomAndMeetingDetails(data) {
           endTime
         );
 
-        const isCurrentRoomFree = getRoomStatusIsFreeForCurrentTime(
-          currentDateObj,
-          meetingDate,
-          meeting.startTime,
-          meeting.endTime
-        );
+        isCurrentRoomFree = isCurrentRoomFree && !isMeetingGoingOnNow;
 
         if (isMeetingGoingOnNow) totalMeetingGoingOnNow += 1;
         if (isMeetingGoingOnToday) totalNoMeetingGoingOnToday += 1;
-        if (isCurrentRoomFree) totalFreeRoomNow += 1;
       });
+      if (isCurrentRoomFree) totalFreeRoomsNow += 1;
     });
   });
 
   return {
-    totalFreeRoomNow,
+    totalFreeRoomsNow,
     totalNoMeetingGoingOnToday,
     totalMeetingGoingOnNow,
+    totalRooms,
+    totalBuildings,
   };
 }
 
 function App() {
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(FETCH_ALL_BUILDINGS);
-
-  const [totalBuildings, setTotalBuildings] = useState(0);
-  const [totalRooms, setTotalRooms] = useState(0);
-  const [freeRoomsNow, setFreeRoomsNow] = useState(0);
-  const [totalMeetingsToday, setTotalMeetingsToday] = useState(0);
-  const [onGoingMeetingsNow, setOnGoingMeetingsNow] = useState(0);
-
-  useEffect(() => {
-    if (!data) return;
-    setTotalBuildings(getTotatMeeting(data));
-    setTotalRooms(getTotalRooms(data));
-    const {
-      totalFreeRoomNow,
-      totalNoMeetingGoingOnToday,
-      totalMeetingGoingOnNow,
-    } = getRoomAndMeetingDetails(data);
-    setFreeRoomsNow(totalFreeRoomNow);
-    setTotalMeetingsToday(totalNoMeetingGoingOnToday);
-    setOnGoingMeetingsNow(totalMeetingGoingOnNow);
+  const {
+    totalFreeRoomsNow,
+    totalNoMeetingGoingOnToday,
+    totalMeetingGoingOnNow,
+    totalRooms,
+    totalBuildings,
+  } = useMemo(() => {
+    if (!data) return {};
+    return getRoomAndMeetingDetails(data);
   }, [data]);
 
   if (loading) return <p>Loading...</p>;
@@ -145,8 +123,6 @@ function App() {
         name: item.name,
       };
     });
-
-    console.log("building list is ", buildingList);
     navigate("/add_meeting", {
       state: {
         buildingList,
@@ -161,12 +137,12 @@ function App() {
       <div>
         <div>Rooms</div>
         <div>{`Total Rooms ${totalRooms}`}</div>
-        <div>{`Free now ${freeRoomsNow}`}</div>
+        <div>{`Free now ${totalFreeRoomsNow}`}</div>
       </div>
       <div>
         <div>Meetings</div>
-        <div>{`Total ${totalMeetingsToday}`}</div>
-        <div>{`Total ${onGoingMeetingsNow} Going On`}</div>
+        <div>{`Total ${totalNoMeetingGoingOnToday}`}</div>
+        <div>{`Total ${totalMeetingGoingOnNow} Going On`}</div>
       </div>
       <button className="button" onClick={handleNavigation}>
         Add meeting

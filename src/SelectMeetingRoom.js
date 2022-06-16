@@ -40,7 +40,11 @@ function checkIfRoomIsAvailabe(
 
     if (
       selectedStartTime.isBetween(startTime, endTime) ||
-      selectedEndTime.isBetween(startTime, endTime)
+      selectedEndTime.isBetween(startTime, endTime) ||
+      (startTime.isBefore(selectedStartTime) &&
+        endTime.isAfter(selectedEndTime)) ||
+      (selectedStartTime.isBefore(startTime) &&
+        selectedEndTime.isAfter(endTime))
     )
       return false;
     return true;
