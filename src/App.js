@@ -7,8 +7,10 @@ import { useNavigate } from "react-router-dom";
 const FETCH_ALL_BUILDINGS = gql`
   query FetchAllBuildings {
     Buildings {
+      id
       name
       meetingRooms {
+        id
         name
         meetings {
           title
@@ -137,7 +139,20 @@ function App() {
   if (error) return <p>Error {`${error}`}</p>;
 
   function handleNavigation() {
-    navigate("/add_meeting");
+    const buildingList = data.Buildings.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+      };
+    });
+
+    console.log("building list is ", buildingList);
+    navigate("/add_meeting", {
+      state: {
+        buildingList,
+        completeData: data.Buildings,
+      },
+    });
   }
 
   return (
