@@ -1,19 +1,1 @@
-.main {
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-  margin: 20px;
-  flex-direction: column;
-}
 
-.room_div {
-  border: 1px solid black;
-  cursor: pointer;
-  padding: 10px;
-  min-width: 300px;
-  background: white;
-}
-
-.room_div:hover {
-  background: #efefef;
-}

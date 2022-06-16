@@ -2,7 +2,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
-import "./rooms.css";
+import "./App.css";
 
 const ADD_MEETING = gql`
   mutation Meeting(
@@ -113,7 +113,7 @@ function SelectMeetingRoom() {
   }
 
   return (
-    <div className="main">
+    <div className="main col">
       <div>
         {bookingRoomList.length &&
           bookingRoomList.map((room) => {
@@ -133,9 +133,9 @@ function SelectMeetingRoom() {
             );
           })}
       </div>
-      <div style={{ margin: "20px" }}>
-        <button onClick={handleSaveMeeting}>Save</button>
-      </div>
+      <button className="button" onClick={handleSaveMeeting}>
+        Save
+      </button>
     </div>
   );
 }

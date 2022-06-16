@@ -65,3 +65,17 @@
   border-radius: 10px;
   width: 200px;
 }
+
+.room_div {
+  border: 1px solid black;
+  cursor: pointer;
+  padding: 10px;
+  min-width: 300px;
+  background: white;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.room_div:hover {
+  background: #efefef;
+}
